@@ -1,6 +1,6 @@
 # camilohe.com — Hugo site
 
-Personal website + blog for Camilo Estevez, built with [Hugo](https://gohugo.io/) (extended) and the [PaperMod](https://github.com/adityatelange/hugo-PaperMod) theme (added as a git submodule).
+Personal website + blog for Camilo Estevez, built with [Hugo](https://gohugo.io/) (extended) and the [PaperMod](https://github.com/adityatelange/hugo-PaperMod) theme (vendored under `themes/PaperMod`, MIT-licensed).
 
 ## Local development
 
@@ -31,7 +31,7 @@ Then add the custom domain `www.camilohe.com` under the Pages project's **Custom
 
 Notes:
 
-- Cloudflare Pages **clones git submodules automatically**, so the PaperMod theme just works — no extra step.
+- The PaperMod theme is vendored under `themes/PaperMod/`, so the build has no extra step.
 - The `HUGO_VERSION` env var tells Pages which Hugo extended binary to build with. Keep it in sync with the version pinned in `.github/workflows/ci.yml`.
 
 ## Security updates
@@ -39,10 +39,13 @@ Notes:
 This stack has a deliberately small surface, and each layer updates differently:
 
 1. **Hugo itself** — a single static binary; there are no runtime dependencies to patch. New releases are picked up by bumping one version string. The monthly `.github/workflows/hugo-version-check.yml` workflow compares the pinned version against the latest upstream release and **opens a GitHub issue** when a newer Hugo exists, reminding you to bump `HUGO_VERSION` in the Cloudflare Pages dashboard (and in `ci.yml`). Update it, push, done.
-2. **PaperMod theme** — it's a git submodule, so it never changes unless you ask it to. To pull the latest theme:
+2. **PaperMod theme** — vendored under `themes/PaperMod/`, so it never changes unless you ask it to. To pull a newer release:
    ```bash
-   git submodule update --remote themes/PaperMod
-   git add themes/PaperMod && git commit -m "Update PaperMod theme" && git push
+   rm -rf themes/PaperMod
+   curl -sL https://github.com/adityatelange/hugo-PaperMod/archive/refs/heads/master.tar.gz | tar xz
+   mv hugo-PaperMod-master themes/PaperMod
+   rm -rf themes/PaperMod/.github
+   git add -A themes/PaperMod && git commit -m "Update PaperMod theme" && git push
    ```
    Review the theme's release notes first; occasionally a theme update needs a config tweak.
 3. **GitHub Actions** — Dependabot is configured (`.github/dependabot.yml`, weekly) and opens PRs automatically when `actions/checkout`, `peaceiris/actions-hugo`, etc. have updates. Merge the PR, CI rebuilds the site, and you're covered.
