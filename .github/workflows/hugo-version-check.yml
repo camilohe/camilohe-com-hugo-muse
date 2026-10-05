@@ -1,0 +1,47 @@
+name: Hugo version check
+
+# Once a month, check whether a newer Hugo release exists and file an issue
+# reminding the owner to bump HUGO_VERSION in the Cloudflare Pages dashboard.
+on:
+  schedule:
+    - cron: "0 9 1 * *" # 09:00 UTC on the 1st of every month
+  workflow_dispatch: # allow manual runs
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      PINNED_HUGO_VERSION: "0.167.0"
+    steps:
+      - name: Compare with latest Hugo release
+        id: compare
+        run: |
+          latest="$(curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | jq -r .tag_name | sed 's/^v//')"
+          pinned="${PINNED_HUGO_VERSION}"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          echo "pinned=$pinned" >> "$GITHUB_OUTPUT"
+          if [ "$latest" != "$pinned" ]; then
+            echo "outdated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "outdated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open reminder issue
+        if: steps.compare.outputs.outdated == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Hugo ${{ steps.compare.outputs.latest }} available (pinned: ${{ steps.compare.outputs.pinned }})" \
+            --body "A newer Hugo release exists.
+
+          - Pinned in CI (\`.github/workflows/ci.yml\`): \`${{ steps.compare.outputs.pinned }}\`
+          - Latest upstream: \`${{ steps.compare.outputs.latest }}\`
+
+          To upgrade:
+          1. Bump \`hugo-version\` in \`.github/workflows/ci.yml\` and the \`PINNED_HUGO_VERSION\` in this workflow.
+          2. Run the build locally (\`hugo --gc --minify\`) to confirm nothing breaks.
+          3. Update the \`HUGO_VERSION\` environment variable in the **Cloudflare Pages dashboard** (Site settings → Environment variables) to \`${{ steps.compare.outputs.latest }}\`.
+          4. Commit and push — Cloudflare Pages rebuilds automatically."

@@ -1,0 +1,66 @@
+baseURL = "https://www.camilohe.com/"
+locale = "en-us"
+title = "Camilo Estevez"
+theme = "PaperMod"
+
+enableRobotsTXT = true
+
+[params]
+  description = "Software Engineer in Ottawa, ON, Canada"
+  author = "Camilo Estevez"
+
+  # Profile mode (home page hero)
+  profileMode.enabled = true
+  profileMode.title = "Camilo Estevez"
+  profileMode.subtitle = "Software Engineer · Ottawa, Canada"
+  profileMode.imageUrl = ""
+  profileMode.imageTitle = "Camilo Estevez"
+  profileMode.buttons = [
+    { name = "GitHub", url = "https://github.com/camilohe" },
+    { name = "Stack Overflow", url = "https://stackoverflow.com/users/380233/camilo-estevez" },
+    { name = "LinkedIn", url = "https://www.linkedin.com/in/camilohe" },
+  ]
+
+  socialIcons = [
+    { name = "github", url = "https://github.com/camilohe" },
+    { name = "linkedin", url = "https://www.linkedin.com/in/camilohe" },
+    { name = "stackoverflow", url = "https://stackoverflow.com/users/380233/camilo-estevez" },
+    { name = "rss", url = "index.xml" },
+  ]
+
+  # Syntax highlighting: Chroma with a dark-friendly style
+  # (PaperMod's dark theme pairs well with "github-dark" / "dracula" / "monokai")
+  ShowCodeCopyButtons = true
+
+[markup]
+  [markup.highlight]
+    style = "github-dark"
+    lineNos = false
+    codeFences = true
+    guessSyntax = true
+
+[menu]
+  [[menu.main]]
+    identifier = "home"
+    name = "Home"
+    url = "/"
+    weight = 10
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 20
+  [[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weight = 30
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 40
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
