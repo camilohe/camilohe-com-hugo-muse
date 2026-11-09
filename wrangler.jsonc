@@ -1,0 +1,24 @@
+{
+  // Assets-only Worker: Hugo writes the site to public/, and there is no Worker script.
+  "name": "camilohe-com-hugo-muse",
+  "compatibility_date": "2026-11-09",
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "assets": {
+    "directory": "./public",
+    // PaperMod's layouts/404.html is emitted as public/404.html.
+    // "404-page" serves the nearest 404.html with HTTP 404.
+    // "single-page-application" would serve index.html with 200 for missing URLs,
+    // and the default "none" would skip the themed 404 page.
+    "not_found_handling": "404-page"
+  }
+}
